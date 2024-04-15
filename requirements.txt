@@ -1,5 +1,4 @@
 dateparser==1.1.1
-jsonpath==0.82
 kafka==1.3.5
 kafka_python==2.0.2
 larkspur==0.2.4
