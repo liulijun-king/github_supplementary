@@ -37,7 +37,8 @@ class GitHub(object):
                 break
             for _ in project_ids:
                 if is_contains(_):
-                    self.list_spider(_)
+                    continue
+                self.list_spider(_)
 
     def hava_id(self):
         while True:
