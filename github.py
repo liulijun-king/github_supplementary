@@ -18,7 +18,7 @@ from bloom_filter import add
 from instance_item import item_main
 from net_tools import req_get
 from redis_tools import redis_conn
-from settings import id_key, day_crawl_key, retry_crawl_key, proxy, project_topic
+from settings import id_key, day_crawl_key, retry_crawl_key, proxy, project_topic, IS_SAVA_USER, user_crawl_key
 
 
 class GitHub(object):
@@ -29,6 +29,14 @@ class GitHub(object):
             'accept-language': 'zh-CN,zh;q=0.9',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
         }
+
+    def bc_id(self):
+        while True:
+            project_ids = redis_conn.spop(retry_crawl_key, 100)
+            if len(project_ids) == 0:
+                break
+            for _ in project_ids:
+                self.list_spider(_)
 
     def hava_id(self):
         while True:
@@ -86,6 +94,8 @@ class GitHub(object):
                 item["ref_url"] = ref_url
                 # uuid
                 item["uuid"] = get_md5(ref_url)
+                # 用户主页链接
+                item["user_url"] = json_path(response.json(), '$.owner.html_url')
                 # 项目url
                 source_url = json_path(response.json(), '$.html_url')
                 item['source_url'] = source_url
@@ -129,6 +139,8 @@ class GitHub(object):
             item['crawler_time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             item['insert_time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             item['update_time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            if IS_SAVA_USER:
+                redis_conn.sadd(user_crawl_key, item.pop("user_url"))
             to_port(project_topic, item)
             logger.info(f"采集成功：{item['project_name']}")
         except Exception as e:

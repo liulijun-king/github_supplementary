@@ -9,10 +9,10 @@
 id_key = 'gb_all_b:ids'
 day_crawl_key = 'gb_all_b:day_crawl'
 retry_crawl_key = 'gb_all_b:retry_crawl'
+user_crawl_key = 'gb_all_b:user_crawl'
 
 # redis项目信息
 startup_nodes = [
-    {"host": "47.97.216.52", "port": 6379},
     {"host": "120.55.67.165", "port": 6379},
     {"host": "120.26.85.177", "port": 6379}
 ]
@@ -23,3 +23,6 @@ proxy = "http://f2199815664-region-US-period-0:k0sl96zx@us.r618.kdlfps.com:18866
 
 # 推送topic
 project_topic = "topic_c1_original_github_projectinformation"
+
+# 是否采集用户项目
+IS_SAVA_USER = False

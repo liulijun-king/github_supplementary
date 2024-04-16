@@ -175,3 +175,13 @@ def json_path(obj: Dict, expr: str, default: Optional = '', is_list: bool = Fals
             return value
     else:
         return default
+
+
+def read_txt(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        str_all = f.read()
+    id_all = []
+    for na in str_all.split('\n'):
+        if na:
+            id_all.append(na.strip())
+    return list(set(id_all))
