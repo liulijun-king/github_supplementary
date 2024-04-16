@@ -3,11 +3,12 @@
 #  文件名称：bloom_filter.py
 #  文件作者：陈梦妮
 #  备注：布隆过滤器
-import hashlib
 
 from larkspur import ScalableBloomFilter
 from rediscluster import RedisCluster
-from settings import startup_nodes,password
+
+from base_tools import get_md5
+from settings import startup_nodes, password
 
 # 创建 Redis 集群连接
 redis_conn = RedisCluster(
@@ -23,9 +24,9 @@ sbf = ScalableBloomFilter(connection=redis_conn,
 
 def add(bl_str) -> bool:
     if isinstance(bl_str, list):
-        add_many([b for b in bl_str])
+        add_many([get_md5(b) for b in bl_str])
     if isinstance(bl_str, str):
-        flg = sbf.add(bl_str)
+        flg = sbf.add(get_md5(bl_str))
         return flg
 
 
@@ -34,7 +35,7 @@ def add_many(bl_str_list):
 
 
 def is_contains(bl_str) -> bool:
-    flg = sbf.__contains__(bl_str)
+    flg = sbf.__contains__(get_md5(bl_str))
     return flg
 
 

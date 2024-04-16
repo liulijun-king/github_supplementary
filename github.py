@@ -14,7 +14,7 @@ from loguru import logger
 from lxml import etree
 
 from base_tools import json_path, get_md5
-from bloom_filter import add
+from bloom_filter import add,is_contains
 from instance_item import item_main
 from net_tools import req_get
 from redis_tools import redis_conn
@@ -36,7 +36,8 @@ class GitHub(object):
             if len(project_ids) == 0:
                 break
             for _ in project_ids:
-                self.list_spider(_)
+                if is_contains(_):
+                    self.list_spider(_)
 
     def hava_id(self):
         while True:
