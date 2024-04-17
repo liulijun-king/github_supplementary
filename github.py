@@ -36,12 +36,13 @@ class GitHub(object):
             project_ids = redis_conn.spop(retry_crawl_key, 100)
             if len(project_ids) == 0:
                 break
-            for _ in project_ids:
-                self.list_spider(_)
+            with ThreadPoolExecutor(max_workers=5) as pool:
+                for _ in project_ids:
+                    pool.submit(self.list_spider, _)
 
     def hava_id(self):
         while True:
-            if redis_conn.llen(id_key) <= 100 or redis_conn.llen(day_crawl_key) > 200000:
+            if redis_conn.llen(id_key) <= 100 or redis_conn.llen(day_crawl_key) > 300000:
                 logger.info(f"今日解析完成！gb_all:day_crawl长度：{redis_conn.llen(day_crawl_key)}")
                 break
             pipeline = redis_conn.pipeline()
@@ -161,6 +162,8 @@ def to_port(topic, item):
             future = kafka_pro.send(topic, send_data.encode())
             record_metadata = future.get(timeout=20)
             if record_metadata:
+                redis_conn.lpush(day_crawl_key,
+                                 str(item['ref_url'].replace("https://api.github.com/repositories/", "")))
                 logger.info(f'插入kafka成功')
                 break
         except Exception as e:
