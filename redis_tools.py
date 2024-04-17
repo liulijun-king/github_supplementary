@@ -23,8 +23,7 @@ def add_id():
         logger.info(f"redis数据库长度为{key_len}")
         count = 0
         if key_len < 1000000:
-            # max_id = redis_conn.lindex(id_key, -1)
-            max_id = 500000000
+            max_id = redis_conn.lindex(id_key, -1)
             logger.info(f"当前序列末尾为：{max_id}")
             with redis_conn.pipeline() as pipe:
                 for _ in range(max_id, max_id - 10000000, -1):
