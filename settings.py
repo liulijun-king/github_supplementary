@@ -19,7 +19,8 @@ startup_nodes = [
 password = 'gew29YAyi'
 
 # 代理信息
-proxy = "http://f2199815664-region-US-period-0:k0sl96zx@us.r618.kdlfps.com:18866/"
+proxy = {"http": "http://f2199815664-region-US-period-0:k0sl96zx@us.r618.kdlfps.com:18866/",
+         "https": "http://f2199815664-region-US-period-0:k0sl96zx@us.r618.kdlfps.com:18866/"}
 
 # 推送topic
 project_topic = "topic_c1_original_github_projectinformation"
