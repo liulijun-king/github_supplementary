@@ -174,4 +174,5 @@ if __name__ == '__main__':
     kafka_pro = KafkaProducer(
         bootstrap_servers=['172.24.73.198:9092'])
     git = GitHub()
-    git.hava_id()
+    # git.hava_id()
+    git.bc_id()
