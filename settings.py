@@ -4,6 +4,7 @@
 # @Site    : 
 # @File    : settings.py
 # @Software: PyCharm
+import platform
 
 # redis键名配置
 id_key = 'gb_all_b:ids'
@@ -18,9 +19,12 @@ startup_nodes = [
 ]
 password = 'gew29YAyi'
 
-# 代理信息
-proxy = {"http": "http://f2199815664-region-US-period-0:k0sl96zx@us.r618.kdlfps.com:18866/",
-         "https": "http://f2199815664-region-US-period-0:k0sl96zx@us.r618.kdlfps.com:18866/"}
+if platform.system().lower() == 'windows':
+    proxy = None
+else:
+    # 代理信息
+    proxy = {"http": "http://f2199815664-region-US-period-0:k0sl96zx@us.r618.kdlfps.com:18866/",
+             "https": "http://f2199815664-region-US-period-0:k0sl96zx@us.r618.kdlfps.com:18866/"}
 
 # 推送topic
 project_topic = "topic_c1_original_github_projectinformation"

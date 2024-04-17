@@ -4,7 +4,6 @@
 # @Site    : 
 # @File    : git_by_search.py
 # @Software: PyCharm
-from urllib.parse import quote
 
 from loguru import logger
 
@@ -34,7 +33,7 @@ def keyword_spider(keyword):
         }
         try:
             params = (
-                ('q', f'{quote(keyword)}'),
+                ('q', f'{keyword}'),
                 ('type', 'repositories'),
                 ('p', f'{page}'),
             )
