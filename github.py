@@ -19,6 +19,7 @@ from instance_item import item_main
 from net_tools import req_get
 from redis_tools import redis_conn
 from settings import id_key, day_crawl_key, retry_crawl_key, proxy, project_topic, IS_SAVA_USER, user_crawl_key
+from concurrent.futures import ThreadPoolExecutor
 
 
 class GitHub(object):
@@ -47,9 +48,10 @@ class GitHub(object):
             for _ in range(10000):
                 pipeline.rpop(id_key)
             id_list = pipeline.execute()
-            for _ in id_list:
-                if _:
-                    self.list_spider(_)
+            with ThreadPoolExecutor(max_workers=5) as pool:
+                for _ in id_list:
+                    if _:
+                        pool.submit(self.list_spider, _)
 
     def list_spider(self, project_id):
         try:
@@ -109,7 +111,7 @@ class GitHub(object):
                 redis_conn.sadd(retry_crawl_key, str(project_id))
         except Exception as e:
             redis_conn.sadd(retry_crawl_key, str(project_id))
-            logger.error(f"json页面采集失败：{traceback.format_exc()}")
+            logger.error(f"json页面采集失败：{e}")
 
     def entity_spider(self, item):
         try:
