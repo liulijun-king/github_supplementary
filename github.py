@@ -15,7 +15,7 @@ from loguru import logger
 from lxml import etree
 
 from base_tools import json_path, get_md5
-from bloom_filter import add,is_contains
+from bloom_filter import add, is_contains
 from instance_item import item_main
 from net_tools import req_get
 from redis_tools import redis_conn
@@ -57,8 +57,10 @@ class GitHub(object):
     def list_spider(self, project_id):
         try:
             project_url = f"https://api.github.com/repositories/{project_id}"
+            logger.info(f"当前采集项目id：{project_id}")
             response = req_get(project_url, headers=self.headers, proxies=proxy)
             if response.status_code == 200:
+                logger.info("api数据获取正常！")
                 item = item_main().copy()
                 # fork的原项目ID
                 item["fork_original_project"] = json_path(response.json(), '$.parent.full_name')
@@ -104,8 +106,10 @@ class GitHub(object):
                 item['source_url'] = source_url
                 self.entity_spider(item)
             elif response.status_code == 404:
+                logger.info("错误的项目id")
                 add(str(project_id))
             else:
+                logger.info("采集失败进入重试队列")
                 redis_conn.sadd(retry_crawl_key, str(project_id))
         except Exception as e:
             redis_conn.sadd(retry_crawl_key, str(project_id))
