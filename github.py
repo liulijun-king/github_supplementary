@@ -5,6 +5,7 @@
 # @File    : github.py
 # @Software: PyCharm
 import json
+import traceback
 from datetime import datetime
 from urllib.parse import urlparse
 
@@ -108,7 +109,7 @@ class GitHub(object):
                 redis_conn.sadd(retry_crawl_key, str(project_id))
         except Exception as e:
             redis_conn.sadd(retry_crawl_key, str(project_id))
-            logger.error(f"json页面采集失败：{e}")
+            logger.error(f"json页面采集失败：{traceback.format_exc()}")
 
     def entity_spider(self, item):
         try:
