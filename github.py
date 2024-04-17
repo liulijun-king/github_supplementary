@@ -5,6 +5,7 @@
 # @File    : github.py
 # @Software: PyCharm
 import json
+import time
 import traceback
 from datetime import datetime
 from urllib.parse import urlparse
@@ -30,6 +31,15 @@ class GitHub(object):
             'accept-language': 'zh-CN,zh;q=0.9',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
         }
+
+    def git_run(self):
+        retry_length = redis_conn.scard(retry_crawl_key)
+        if retry_length > 0:
+            self.bc_id()
+            time.sleep(10)
+            self.hava_id()
+        else:
+            self.hava_id()
 
     def bc_id(self):
         while True:
@@ -178,5 +188,4 @@ if __name__ == '__main__':
     kafka_pro = KafkaProducer(
         bootstrap_servers=['172.24.73.198:9092'])
     git = GitHub()
-    # git.hava_id()
-    git.bc_id()
+    git.git_run()
