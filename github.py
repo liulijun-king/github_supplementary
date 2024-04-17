@@ -15,7 +15,6 @@ from loguru import logger
 from lxml import etree
 
 from base_tools import json_path, get_md5
-from bloom_filter import add, is_contains
 from instance_item import item_main
 from net_tools import req_get
 from redis_tools import redis_conn
@@ -37,8 +36,6 @@ class GitHub(object):
             if len(project_ids) == 0:
                 break
             for _ in project_ids:
-                if is_contains(_):
-                    continue
                 self.list_spider(_)
 
     def hava_id(self):
@@ -107,7 +104,6 @@ class GitHub(object):
                 self.entity_spider(item)
             elif response.status_code == 404:
                 logger.info("错误的项目id")
-                add(str(project_id))
             else:
                 logger.info("采集失败进入重试队列")
                 redis_conn.sadd(retry_crawl_key, str(project_id))
@@ -163,7 +159,6 @@ def to_port(topic, item):
             future = kafka_pro.send(topic, send_data.encode())
             record_metadata = future.get(timeout=20)
             if record_metadata:
-                add(str(item['ref_url'].replace("https://api.github.com/repositories/", "")))
                 logger.info(f'插入kafka成功')
                 break
         except Exception as e:
