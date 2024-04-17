@@ -40,8 +40,8 @@ def keyword_spider(keyword):
             )
             response = req_get('https://github.com/search', headers=headers, params=params, proxies=proxy)
             if response.status_code == 200 and response.json().get("payload"):
-                logger.info(f"采集成功,关键词：{keyword}")
                 results = response.json().get("payload").get("results")
+                logger.info(f"采集成功,关键词：{keyword},长度：{len(results)}")
                 deal_json(results)
                 if len(results) < 10:
                     break
