@@ -36,10 +36,10 @@ class GitHub(object):
         retry_length = redis_conn.scard(retry_crawl_key)
         if retry_length > 0:
             self.bc_id()
-            time.sleep(10)
-            self.hava_id()
-        else:
-            self.hava_id()
+        #     time.sleep(10)
+        #     self.hava_id()
+        # else:
+        #     self.hava_id()
 
     def bc_id(self):
         while True:
@@ -49,7 +49,7 @@ class GitHub(object):
             with ThreadPoolExecutor(max_workers=5) as pool:
                 for _ in project_ids:
                     pool.submit(self.list_spider, _)
-
+            break
     def hava_id(self):
         while True:
             if redis_conn.llen(id_key) <= 100 or redis_conn.llen(day_crawl_key) > 300000:
@@ -69,6 +69,7 @@ class GitHub(object):
         try:
             project_url = f"https://api.github.com/repositories/{project_id}"
             logger.info(f"当前采集项目id：{project_id}")
+            print(proxy)
             response = req_get(project_url, headers=self.headers, proxies=proxy)
             if response.status_code == 200:
                 logger.info("api数据获取正常！")
@@ -119,6 +120,8 @@ class GitHub(object):
             elif response.status_code == 404:
                 logger.info("错误的项目id")
             else:
+                print(response.status_code)
+                print(response.content.decode())
                 logger.info("采集失败进入重试队列")
                 redis_conn.sadd(retry_crawl_key, str(project_id))
         except Exception as e:
