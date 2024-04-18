@@ -48,7 +48,7 @@ class GitHub(object):
 
     def hava_id(self):
         while True:
-            if redis_conn.llen(id_key) <= 100 or redis_conn.llen(day_crawl_key) > 300000:
+            if redis_conn.llen(id_key) <= 20000 or redis_conn.llen(day_crawl_key) > 300000:
                 logger.info(f"今日解析完成！gb_all:day_crawl长度：{redis_conn.llen(day_crawl_key)}")
                 redis_conn.delete(day_crawl_key)
                 break
