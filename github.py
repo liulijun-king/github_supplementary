@@ -56,7 +56,7 @@ class GitHub(object):
             for _ in range(10000):
                 pipeline.rpop(id_key)
             id_list = pipeline.execute()
-            with ThreadPoolExecutor(max_workers=5) as pool:
+            with ThreadPoolExecutor(max_workers=15) as pool:
                 for _ in id_list:
                     if _:
                         pool.submit(self.list_spider, _)
