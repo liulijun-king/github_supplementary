@@ -36,9 +36,9 @@ class GitHub(object):
         if retry_length > 0:
             self.bc_id()
             time.sleep(10)
-        #     self.hava_id()
-        # else:
-        #     self.hava_id()
+            self.hava_id()
+        else:
+            self.hava_id()
 
     def bc_id(self):
         while True:
