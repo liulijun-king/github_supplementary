@@ -36,9 +36,9 @@ class GitHub(object):
         if retry_length > 0:
             self.bc_id()
             time.sleep(10)
-            self.hava_id()
-        else:
-            self.hava_id()
+        #     self.hava_id()
+        # else:
+        #     self.hava_id()
 
     def bc_id(self):
         while True:
@@ -48,6 +48,7 @@ class GitHub(object):
             with ThreadPoolExecutor(max_workers=5) as pool:
                 for _ in project_ids:
                     pool.submit(self.list_spider, _)
+            break
 
     def hava_id(self):
         while True:
@@ -69,6 +70,9 @@ class GitHub(object):
             project_url = f"https://api.github.com/repositories/{project_id}"
             logger.info(f"当前采集项目id：{project_id}")
             response = req_get(project_url, headers=self.headers, proxies=proxy)
+            print(response.status_code)
+            print(response.json().get("message"))
+            print(response.json().get("message") == "Repository access blocked")
             if response.status_code == 200:
                 logger.info("api数据获取正常！")
                 item = item_main().copy()
